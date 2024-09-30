@@ -1,0 +1,190 @@
+public class Task21 {
+    public static void main(String[] args) {
+        String result = duplicateChars("Barack", "Obama");
+        System.out.println(result);
+    }
+
+    public static String duplicateChars(String str1, String str2) {
+        StringBuilder result = new StringBuilder();
+
+        str2 = str2.toLowerCase();
+
+        for (int i = 0; i < str1.length(); i++) {
+            char c = str1.charAt(i);
+
+            if (str2.indexOf(Character.toLowerCase(c)) == -1) {
+                result.append(c);
+            }
+        }
+
+        return result.toString();
+    }
+}
+public class Task22 {
+    public static void main(String[] args) {
+        int[] arr = {3, 12, 7, 81, 52};
+        int result = dividedByThree(arr);
+        System.out.println(result);
+    }
+
+    public static int dividedByThree(int[] arr) {
+        int count = 0;
+
+        for (int num : arr) {
+            if (num % 2 != 0 && num % 3 == 0) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+}
+public class Task23 {
+    public static void main(String[] args) {
+        String result1 = getInitials("simonov sergei evgenievich");
+        String result2 = getInitials("kozhevnikova tatiana vitalevna");
+
+        System.out.println(result1);
+        System.out.println(result2);
+    }
+
+    public static String getInitials(String FIO){
+        String[] massive = new String[3];
+        String[] words = FIO.split(" ");
+        massive[0] = (words[1].charAt(0) + ".").toUpperCase();
+        massive[1] = (words[2].charAt(0) + ".").toUpperCase();
+        massive[2] = (words[0].charAt(0) + "").toUpperCase() + words[0].substring(1,words[0].length());
+        return String.join("", massive);
+    }
+}
+import java.util.Arrays;
+
+public class Task24 {
+    public static void main(String[] args) {
+        double[] arr1 = {3.5, 7.0, 1.5, 9.0, 5.5};
+        double[] arr2 = {10.0, 10.0, 10.0, 10.0};
+
+        System.out.println(Arrays.toString(normalizator(arr1)));
+        System.out.println(Arrays.toString(normalizator(arr2)));
+    }
+
+    public static double[] normalizator(double[] massive){
+        double max = Arrays.stream(massive).max().getAsDouble();
+        double min = Arrays.stream(massive).min().getAsDouble();
+        for (int i = 0; i < massive.length; i++) {
+            massive[i] = (massive[i]-min)/(max-min);
+        }
+        return massive;
+}
+import java.util.Arrays;
+
+public class Task25 {
+    public static void main(String[] args) {
+        double[] arr = {1.6, 0, 212.3, 34.8, 0, 27.5};
+        System.out.println(Arrays.toString(compressedNums(arr)));
+    }
+
+    public static int[] compressedNums(double[] arr) {
+        int[] filteredArr = Arrays.stream(arr)
+                .filter(num -> num != 0)
+                .mapToInt(num -> (int)(num))
+                .toArray();
+
+        Arrays.sort(filteredArr);
+
+        return filteredArr;
+    }
+}
+public class Task26 {
+    public static void main(String[] args) {
+        String result1 = camelToSnake("helloWorld");
+        String result2 = camelToSnake("thisIsCamelCase");
+
+        System.out.println(result1);
+        System.out.println(result2);
+    }
+
+    public static String camelToSnake(String camelCaseStr) {
+        String snakeCaseStr = camelCaseStr.replaceAll("([A-Z])", "_$1").toLowerCase();
+
+        return snakeCaseStr;
+    }
+}
+import java.util.Arrays;
+
+public class Task27 {
+    public static void main(String[] args) {
+        int[] arr = {3, 5, 8, 1, 2, 4};
+        System.out.println(secondBiggest(arr));
+    }
+    public static int secondBiggest(int[] numbers){
+        Arrays.sort(numbers);
+        return numbers[numbers.length - 2];
+    }
+}
+public class Task28 {
+    public static void main(String[] args) {
+        System.out.println(localReverse("baobab", 'b'));
+        System.out.println(localReverse("Hello, I’m under the water, please help me", 'e'));
+    }
+
+    public static String localReverse(String str, Character symbol){
+        String result = "";
+        String[] splitS = str.split(symbol+"", -1);
+        System.out.println(Arrays.toString(splitS));
+        for (int i=0; i<splitS.length; i++) {
+            if (i%2==1 && (i!=splitS.length-1 || str.charAt(str.length()-1) == symbol))
+                result += new StringBuilder(splitS[i]).reverse();
+            else
+                result += splitS[i];
+            if (i != splitS.length - 1)
+                result += symbol;
+        }
+        return result;
+    }
+
+}
+public class Task29{
+    public static void main(String[] args) {
+        System.out.println(equal(8, 1, 8));
+        System.out.println(equal(5, 5, 5));
+        System.out.println(equal(4, 9, 6));
+    }
+
+    public static int equal(int a, int b, int c) {
+        if (a == b && b == c) {
+            return 3;
+        }
+        else if (a == b || a == c || b == c) {
+            return 2;
+        }
+            return 0;
+    }
+}
+import java.util.Arrays;
+
+public class Task210 {
+    public static void main(String[] args) {
+        System.out.println(isAnagram("LISTEN", "silent"));
+        System.out.println(isAnagram("Eleven plus two?", "Twelve plus one!"));
+        System.out.println(isAnagram("hello", "world"));
+    }
+
+    public static boolean isAnagram(String str1, String str2) {
+        String cleanedStr1 = str1.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+        String cleanedStr2 = str2.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+
+
+        if (cleanedStr1.length() != cleanedStr2.length()) {
+            return false;
+        }
+
+        char[] charArray1 = cleanedStr1.toCharArray();
+        char[] charArray2 = cleanedStr2.toCharArray();
+
+        Arrays.sort(charArray1);
+        Arrays.sort(charArray2);
+
+        return Arrays.equals(charArray1, charArray2);
+    }
+}
