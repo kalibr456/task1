@@ -1,0 +1,115 @@
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+public class Task3{
+
+    // Task 1: Странная пара строк
+    public static boolean isStrangePair(String str1, String str2) {
+        if (str1.isEmpty() && str2.isEmpty()) return true;
+        if (str1.isEmpty() || str2.isEmpty()) return false;
+        return str1.charAt(0) == str2.charAt(str2.length() - 1) && str2.charAt(0) == str1.charAt(str1.length() - 1);
+
+    // Task 2: Применение скидки к товарам
+    public static ArrayList<Object[]> sale(ArrayList<Object[]> list, int discount) {
+        ArrayList<Object[]> res = new ArrayList<>();
+        for (Object[] item : list) {
+            double newPrice = Math.max(1, (int)Math.ceil((Integer)item[1] * (100 - discount) / 100.0));
+            res.add(new Object[]{item[0], (int) newPrice});
+        }
+        return res;
+    }
+
+    // Task 3: Попадание в круг
+    public static boolean successShoot(int x, int y, int r, int m, int n) {
+        return Math.sqrt(Math.pow(x - m, 2) + Math.pow(y - n, 2)) < r;
+    }
+
+    // Task 4: Четность суммы цифр
+    public static boolean parityAnalysis(int num) {
+        int sum = 0, temp = num;
+        while (temp > 0) {
+            sum += temp % 10;
+            temp /= 10;
+        }
+        return num % 2 == sum % 2;
+    }
+
+    // Task 5: Камень, ножницы, бумага
+    public static String rps(String p1, String p2) {
+        if (p1.equals(p2)) return "Tie";
+        if (p1.equals("rock") && p2.equals("scissors") || 
+            p1.equals("scissors") && p2.equals("paper") || 
+            p1.equals("paper") && p2.equals("rock"))
+            return "Player 1 wins";
+        return "Player 2 wins";
+    }
+
+    // Task 6: Мультипликативная постоянная
+    public static int bugger(int num) {
+        if (num < 10) return 0;
+        int product = 1;
+        while (num > 0) {
+            product *= num % 10;
+            num /= 10;
+        }
+        return bugger(product) + 1;
+    }
+
+    // Task 7: Самый дорогой предмет
+    public static String mostExpensive(List<Object[]> inventory) {
+        String mostExpensiveItem = "";
+        int maxValue = 0;
+
+        for (Object[] item : inventory) {
+            String name = (String) item[0];
+            int price = (int) item[1];
+            int quantity = (int) item[2];
+            int totalValue = price * quantity;
+
+            if (totalValue > maxValue) {
+                maxValue = totalValue;
+                mostExpensiveItem = name;
+            }
+        }
+
+        return "Наиб. общ. стоимость у предмета " + mostExpensiveItem + " - " + maxValue;
+    }
+
+    // Task 8: Длинная подстрока из уникальных символов
+    public static String longestUnique(String str) {
+        String longest = "";
+        for (int i = 0; i < str.length(); i++) {
+            Set<Character> seen = new HashSet<>();
+            StringBuilder current = new StringBuilder();
+            for (int j = i; j < str.length(); j++) {
+                char c = str.charAt(j);
+                if (seen.contains(c)) break;
+                seen.add(c);
+                current.append(c);
+            }
+            if (current.length() > longest.length()) {
+                longest = current.toString();
+            }
+        }
+        return longest;
+    }
+
+
+    // Task 9: Префикс и суффикс
+    public static boolean isPrefix(String word, String prefix) {
+        return word.startsWith(prefix.substring(0, prefix.length() - 1));
+    }
+
+    public static boolean isSuffix(String word, String suffix) {
+        return word.endsWith(suffix.substring(1));
+    }
+
+    // Task 10: Помещается ли кирпич
+    public static boolean doesBrickFit(int a, int b, int c, int w, int h) {
+        return (a <= w && b <= h) || (a <= h && b <= w) ||
+               (a <= w && c <= h) || (a <= h && c <= w) ||
+               (b <= w && c <= h) || (b <= h && c <= w);
+    }
+}
+}
