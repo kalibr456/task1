@@ -277,14 +277,14 @@ public class Task9{
         System.out.println(numericOrder("re6sponsibility Wit1h gr5eat power3 4comes g2reat"));
     }
 
-    public static String numericOrder(String str) {
-        String[] words = str.split(" ");
-        Arrays.sort(words, Comparator.comparingInt(Main::extractNumber));
-        return String.join(" ", words);
-    }
-    private static int extractNumber(String word) {
-        String number = word.replaceAll("\\D", "");
-        return Integer.parseInt(number);
+     public static String numericOrder(String input) {
+        String[] words = input.split(" ");
+        String[] result = new String[words.length];
+        for (String word : words) {
+            int pos = word.replaceAll("\\D+", "").isEmpty() ? 0 : Integer.parseInt(word.replaceAll("\\D+", "")) - 1;
+            result[pos] = word.replaceAll("\\d+", "");
+        }
+        return String.join(" ", result);
     }
 }
 import java.util.HashMap;
@@ -295,30 +295,21 @@ public class Task10 {
         System.out.println(fibString("CCCABDD")); // Ожидается: true
         System.out.println(fibString("ABC"));     // Ожидается: false
     }
-
-    public static boolean fibString(String str) {
-        Map<Character, Integer> charCount = new HashMap<>();
-        for (char c : str.toCharArray()) {
-            charCount.put(c, charCount.getOrDefault(c, 0) + 1);
+    public static boolean fibString(String input) {
+        int[] counts = new int[256];
+        for (char ch : input.toCharArray()) {
+            counts[ch]++;
         }
-        int[] counts = charCount.values().stream().mapToInt(i -> i).toArray();
+        List<Integer> frequencies = new ArrayList<>();
         for (int count : counts) {
-            if (!isFibonacci(count)) {
+            if (count > 0) frequencies.add(count);
+        }
+        Collections.sort(frequencies);
+        for (int i = 2; i < frequencies.size(); i++) {
+            if (frequencies.get(i) != frequencies.get(i - 1) + frequencies.get(i - 2)) {
                 return false;
             }
         }
         return true;
     }
-    private static boolean isFibonacci(int num) {
-        if (num == 0 || num == 1) {
-            return true;
-        }
-        int a = 0, b = 1;
-        while (b < num) {
-            int temp = b;
-            b = a + b;
-            a = temp;
-        }
-        return b == num;
-    }
-}
+}  
