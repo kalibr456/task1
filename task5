@@ -1,0 +1,260 @@
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(sameLetterPattern("abc", "xyz"));  // true
+        System.out.println(memeSum(123, 456));  // 579
+        System.out.println(digitsCount(12345));  // 5
+        System.out.println(longestRun(new int[]{1, 2, 3, 1, 2, 3}));  // 3
+        System.out.println(takeDownAverage(List.of("95%", "83%", "90%")));  // 95%
+        System.out.println(canMove("Rook", "A8", "H8"));  // true
+        System.out.println(maxPossible(9328, 456));  // 9658
+        System.out.println(timeDifference("Los Angeles", "April 1, 2011 23:23", "Canberra"));  // 2011-4-2 17:23
+        System.out.println(isNew(509));  // true
+    }
+    // Задание 1:
+    public static boolean sameLetterPattern(String str1, String str2) {
+        if (str1.length() != str2.length()) return false;
+
+        Map<Character, Character> map = new HashMap<>();
+        for (int i = 0; i < str1.length(); i++) {
+            char char1 = str1.charAt(i);
+            char char2 = str2.charAt(i);
+
+            if (map.containsKey(char1)) {
+                if (map.get(char1) != char2) return false;
+            } else {
+                if (map.containsValue(char2)) return false;
+                map.put(char1, char2);
+            }
+        }
+        return true;
+    }
+
+    // Задание 2:
+    public static int memeSum(int a, int b) {
+        StringBuilder result = new StringBuilder();
+        String strA = Integer.toString(a);
+        String strB = Integer.toString(b);
+
+        int maxLength = Math.max(strA.length(), strB.length());
+        strA = String.format("%" + maxLength + "s", strA).replace(' ', '0');
+        strB = String.format("%" + maxLength + "s", strB).replace(' ', '0');
+
+        for (int i = 0; i < maxLength; i++) {
+            int digitA = strA.charAt(i) - '0';
+            int digitB = strB.charAt(i) - '0';
+            result.append(digitA + digitB);
+        }
+
+        return Integer.parseInt(result.toString());
+    }
+
+    // Задание 3:
+    public static int digitsCount(long num) {
+        if (num == 0) return 1;
+        return (int) (Math.log10(num) + 1);
+    }
+
+    // Задание 4:
+    public static int totalPoints(String[] words, String baseWord) {
+        int totalPoints = 0;
+
+        char[] baseChars = baseWord.toCharArray();
+        Arrays.sort(baseChars);
+        String sortedBaseWord = new String(baseChars);
+
+        Set<String> countedSixLetterWords = new HashSet<>();
+
+        for (String word : words) {
+            if (!canFormWord(word, sortedBaseWord)) {
+                continue;
+            }
+
+            int wordLength = word.length();
+            int points = 0;
+
+            switch (wordLength) {
+                case 3: points = 1; break;
+                case 4: points = 2; break;
+                case 5: points = 3; break;
+                case 6:
+                    points = 4;
+                    if (!countedSixLetterWords.contains(word)) {
+                        points += 50;
+                        countedSixLetterWords.add(word);
+                    }
+                    break;
+            }
+            totalPoints += points;
+        }
+
+        return totalPoints;
+    }
+    private static boolean canFormWord(String word, String sortedBaseWord) {
+        char[] wordChars = word.toCharArray();
+        Arrays.sort(wordChars);
+        String sortedWord = new String(wordChars);
+
+        int i = 0, j = 0;
+        while (i < sortedWord.length() && j < sortedBaseWord.length()) {
+            if (sortedWord.charAt(i) == sortedBaseWord.charAt(j)) {
+                i++;
+            }
+            j++;
+        }
+
+        return i == sortedWord.length();
+    }
+
+    // Задание 5:
+    public static int longestRun(int[] arr) {
+        if (arr.length == 0) return 0;
+        int maxRun = 1;
+        int currentRun = 1;
+
+        for (int i = 1; i < arr.length; i++) {
+            if (arr[i] == arr[i - 1] + 1 || arr[i] == arr[i - 1] - 1) {
+                currentRun++;
+            } else {
+                maxRun = Math.max(maxRun, currentRun);
+                currentRun = 1;
+            }
+        }
+        return Math.max(maxRun, currentRun);
+    }
+
+    // Задание 6:
+    public static String takeDownAverage(List<String> grades) {
+        List<Integer> gradeValues = new ArrayList<>();
+        for (String grade : grades) {
+            gradeValues.add(Integer.parseInt(grade.replace("%", "")));
+        }
+
+        int total = 0;
+        for (int grade : gradeValues) {
+            total += grade;
+        }
+        int average = total / gradeValues.size();
+        int decreasePercentage = average - 5;
+        return decreasePercentage + "%";
+    }
+
+    // Задание 7:
+    public static boolean canMove(String piece, String position, String target) {
+        int[] pos = parsePosition(position);
+        int[] targetPos = parsePosition(target);
+
+        switch (piece.toLowerCase()) {
+            case "rook":
+                return pos[0] == targetPos[0] || pos[1] == targetPos[1];
+            case "bishop":
+                return Math.abs(pos[0] - targetPos[0]) == Math.abs(pos[1] - targetPos[1]);
+            case "queen":
+                return pos[0] == targetPos[0] || pos[1] == targetPos[1] ||
+                        Math.abs(pos[0] - targetPos[0]) == Math.abs(pos[1] - targetPos[1]);
+            case "king":
+                return Math.abs(pos[0] - targetPos[0]) <= 1 && Math.abs(pos[1] - targetPos[1]) <= 1;
+            case "knight":
+                return Math.abs(pos[0] - targetPos[0]) == 2 && Math.abs(pos[1] - targetPos[1]) == 1 ||
+                        Math.abs(pos[0] - targetPos[0]) == 1 && Math.abs(pos[1] - targetPos[1]) == 2;
+            case "pawn":
+                return pos[0] == targetPos[0] && (pos[1] + 1 == targetPos[1]);
+            default:
+                return false;
+        }
+    }
+
+    private static int[] parsePosition(String position) {
+        char col = position.charAt(0);
+        int row = Integer.parseInt(position.substring(1));
+        return new int[]{col - 'A', row - 1};
+    }
+
+    // Задание 8:.
+    public static int maxPossible(int num1, int num2) {
+        char[] num1Chars = Integer.toString(num1).toCharArray();
+        char[] num2Chars = Integer.toString(num2).toCharArray();
+        Arrays.sort(num2Chars);
+
+        int index = 0;
+        for (int i = 0; i < num1Chars.length; i++) {
+            if (index < num2Chars.length && num2Chars[index] > num1Chars[i]) {
+                num1Chars[i] = num2Chars[index++];
+            }
+        }
+
+        return Integer.parseInt(new String(num1Chars));
+    }
+
+    // Задание 9:
+    private static final Map<String, Integer> cityOffsets = new HashMap<>();
+
+    static {
+        cityOffsets.put("Los Angeles", -8 * 60);   // -8:00 GMT
+        cityOffsets.put("New York", -5 * 60);      // -5:00 GMT
+        cityOffsets.put("Caracas", -4 * 60 - 30);  // -4:30 GMT
+        cityOffsets.put("Buenos Aires", -3 * 60);  // -3:00 GMT
+        cityOffsets.put("London", 0);              // 00:00 GMT
+        cityOffsets.put("Rome", 1 * 60);           // +1:00 GMT
+        cityOffsets.put("Moscow", 3 * 60);         // +3:00 GMT
+        cityOffsets.put("Tehran", 3 * 60 + 30);    // +3:30 GMT
+        cityOffsets.put("New Delhi", 5 * 60 + 30); // +5:30 GMT
+        cityOffsets.put("Beijing", 8 * 60);        // +8:00 GMT
+        cityOffsets.put("Canberra", 10 * 60);      // +10:00 GMT
+    }
+
+    public static String timeDifference(String cityA, String timestamp, String cityB) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy HH:mm");
+        LocalDateTime dateTimeA = LocalDateTime.parse(timestamp, formatter);
+
+        int offsetA = cityOffsets.get(cityA);
+        int offsetB = cityOffsets.get(cityB);
+
+        int timeDifference = offsetB - offsetA;
+
+        LocalDateTime dateTimeB = dateTimeA.plusMinutes(timeDifference);
+
+        DateTimeFormatter resultFormatter = DateTimeFormatter.ofPattern("yyyy-M-d HH:mm");
+        return dateTimeB.format(resultFormatter);
+    }
+
+
+}
+    // Задание 10:
+    public static boolean isNew(int num) {
+        String numStr = Integer.toString(num);
+        Set<Integer> permutations = new HashSet<>();
+        generatePermutations(numStr.toCharArray(), 0, permutations);
+
+        for (int perm : permutations) {
+            if (perm < num) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static void generatePermutations(char[] chars, int index, Set<Integer> permutations) {
+        if (index == chars.length) {
+            int perm = Integer.parseInt(new String(chars));
+            if (chars[0] != '0') {
+                permutations.add(perm);
+            }
+            return;
+        }
+
+        for (int i = index; i < chars.length; i++) {
+            swap(chars, index, i);
+            generatePermutations(chars, index + 1, permutations);
+            swap(chars, index, i);
+        }
+    }
+
+    private static void swap(char[] chars, int i, int j) {
+        char temp = chars[i];
+        chars[i] = chars[j];
+        chars[j] = temp;
+    }
+
+}
